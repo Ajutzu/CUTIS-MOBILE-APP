@@ -6,10 +6,10 @@ import 'api.dart';
 class SkinDetectionResult {
   final List<dynamic> predictions;
   final bool success;
-  final String imageUrl;
-  final String recommendation;
-  final String confidence;
-  final String severity;
+  final String? imageUrl;
+  final String? recommendation;
+  final String? confidence;
+  final String? severity;
   final bool medicalHistoryAdded;
   final bool conditionFound;
   final List<dynamic> specialists;
@@ -29,17 +29,27 @@ class SkinDetectionResult {
   });
 
   factory SkinDetectionResult.fromJson(Map<String, dynamic> json) {
+    final preds = (json['predictions'] ?? []) as List<dynamic>;
+    // If top-level confidence absent, derive from first prediction
+    String? confidence = json['confidence'] as String?;
+    if (confidence == null && preds.isNotEmpty) {
+      final dynamic c = preds.first;
+      if (c is Map && c['confidence'] != null) {
+        confidence = c['confidence'].toString();
+      }
+    }
+
     return SkinDetectionResult(
-      predictions: json['predictions'] as List<dynamic>,
-      success: json['success'] as bool,
-      imageUrl: json['imageUrl'] as String,
-      recommendation: json['recommendation'] as String,
-      confidence: json['confidence'] as String,
-      severity: json['severity'] as String,
-      medicalHistoryAdded: json['medicalHistoryAdded'] as bool,
-      conditionFound: json['conditionFound'] as bool,
-      specialists: json['specialists'] as List<dynamic>,
-      clinics: json['clinics'] as List<dynamic>,
+      predictions: preds,
+      success: json['success'] as bool? ?? false,
+      imageUrl: json['imageUrl'] as String?,
+      recommendation: json['recommendation'] as String?,
+      confidence: confidence,
+      severity: json['severity'] as String? ?? 'Unknown',
+      medicalHistoryAdded: json['medicalHistoryAdded'] as bool? ?? false,
+      conditionFound: json['conditionFound'] as bool? ?? false,
+      specialists: (json['specialists'] ?? []) as List<dynamic>,
+      clinics: (json['clinics'] ?? []) as List<dynamic>,
     );
   }
 }

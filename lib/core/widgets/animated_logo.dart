@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AnimatedLogo extends StatefulWidget {
   final double width;
-  const AnimatedLogo({super.key, this.width = 200});
+  const AnimatedLogo({super.key, this.width = 300});
 
   @override
   State<AnimatedLogo> createState() => _AnimatedLogoState();
@@ -20,7 +20,10 @@ class _AnimatedLogoState extends State<AnimatedLogo> with SingleTickerProviderSt
       vsync: this,
     )..repeat(reverse: true);
     _animation = Tween<double>(begin: 0.90, end: 1.10).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const ElasticOutCurve(0.5),
+      ),
     );
   }
 

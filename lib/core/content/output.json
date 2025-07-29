@@ -1,0 +1,57 @@
+
+{
+    "predictions": [
+        {
+            "class": "Warts",
+            "confidence": 96.81
+        }
+    ],
+    "success": true,
+    "imageUrl": "https://res.cloudinary.com/dujpi7cvl/image/upload/v1752760858/Cutis/Skins/Warts/1752760858022-images.jpg.jpg",
+    "recommendation": "Use salicylic acid, cryotherapy, or see a dermatologist. Avoid direct contact with others’ warts or sharing personal items. Learn more at <a href=\"https://www.cdc.gov/hpv/parents/warts.html\" target=\"_blank\">CDC</a>.",
+    "severity": "Low",
+    "medicalHistoryAdded": true,
+    "conditionFound": true,
+    "specialists": [
+        {
+            "name": "Dr. MA. CELINA CEPHYR GONZALEZ, Batangas City ... - SeriousMD",
+            "link": "https://seriousmd.com/doc/gonzalezdermatology",
+            "description": "Dr. Ma. Celina Cephyr Gonzalez, MD, FPDS. Last Seen Today. Specialty: Dermatology. Experience: 9 Years. Subspecialty: Photodermatology.",
+            "specialty": "Warts"
+        },
+        {
+            "name": "Regular clinic schedule❣ San Jose, Batangas Jan 6, Mon, 1-3pm ...",
+            "link": "https://www.facebook.com/docnina.derm.ph/posts/%EF%B8%8Fregular-clinic-schedule%EF%B8%8F-san-jose-batangasjan-6-mon-1-3pmbatangas-cityjan-7-tue/549033341469845/",
+            "description": "Dr. Nina Aguado-De Chavez - Batangas Dermatologist. Roselle De Roxas Falsado 750 po for in-clinic 550 for online consultation. 6 mos. Recent ...",
+            "specialty": "Warts"
+        },
+        {
+            "name": "Dr. Dumont Domingo Dermatology Clinic in Batangas City, Philippines",
+            "link": "https://www.whatclinic.com/dermatology/philippines/batangas-city/dr-dumont-domingo-dermatology-clinic",
+            "description": "Our clinic is headed by Dr. Dumont I. Domingo, a board-certified diplomate of the Philippine Dermatological Society.",
+            "specialty": "Warts"
+        },
+        {
+            "name": "Dermatology doctors in Santo Tomas, Batangas - NowServing",
+            "link": "https://nowserving.ph/santo-tomas-batangas/dermatology/",
+            "description": "We've found 3 Doctors you can book with! Dr. Celine Aura Fider RPh, MD, MBA, DPAPSHPI - Dermatology, Acne Management, Scars 11 yrs experience",
+            "specialty": "Warts"
+        }
+    ],
+    "clinics": [
+        {
+            "title": "Batangas Skin Clinic",
+            "link": "https://batangasskinclinic.com",
+            "snippet": "A leading dermatology clinic in Batangas City offering treatment for warts and other skin conditions.",
+            "condition": "Warts",
+            "location": "Batangas City"
+        },
+        {
+            "title": "Skin Center Batangas",
+            "link": "https://skincenterbatangas.com",
+            "snippet": "Comprehensive skin care and wart removal services in Batangas.",
+            "condition": "Warts",
+            "location": "Batangas City"
+        }
+    ]
+}

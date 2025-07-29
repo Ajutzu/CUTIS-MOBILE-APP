@@ -7,6 +7,7 @@ import 'signup.dart';
 import 'forgot_password_page.dart';
 import 'home_screen.dart';
 import '../../routes/authentication_service.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthLoginScreen extends StatefulWidget {
   const AuthLoginScreen({Key? key}) : super(key: key);
@@ -21,6 +22,9 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   final AuthenticationService _authService = AuthenticationService();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: '170384538510-8upkkoio508msp6b3mcpk0jcuif52b83.apps.googleusercontent.com',
+  );
 
   @override
   void dispose() {
@@ -44,7 +48,9 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
 
       if (response.success) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => HomeScreen(userName: response.user?['name'] ?? '')), 
+          MaterialPageRoute(
+            builder: (_) => HomeScreen(userName: response.user?['name'] ?? ''),
+          ),
         );
       } else {
         showResponseDialog(
@@ -54,6 +60,50 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
               : 'Invalid email or password',
         );
       }
+    }
+  }
+
+  Future<void> _onGoogleLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      final GoogleSignInAccount? account = await _googleSignIn.signIn();
+      if (account == null) {
+        // User cancelled the sign-in
+        setState(() => _isLoading = false);
+        return;
+      }
+      final GoogleSignInAuthentication auth = await account.authentication;
+      final String? idToken = auth.idToken;
+      if (idToken == null) {
+        setState(() => _isLoading = false);
+        showResponseDialog(
+          context: context,
+          message: 'Failed to retrieve Google token',
+        );
+        return;
+      }
+
+      final AuthResponse response = await _authService.googleLogin(idToken);
+      if (response.success) {
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => HomeScreen(userName: response.user?['name'] ?? ''),
+          ),
+        );
+      } else {
+        showResponseDialog(
+          context: context,
+          message: response.message,
+        );
+      }
+    } catch (e) {
+      showResponseDialog(
+        context: context,
+        message: 'Google sign-in failed: $e',
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -70,11 +120,10 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 32),
-                Text(
-                  'Login to your account',
-                  style: AppTextStyles.heading,
-                ),
+                Image.asset('assets/images/Cutis.png', height: 100),
+                const SizedBox(height: 8),
+
+                Text('Login to your account', style: AppTextStyles.heading),
                 const SizedBox(height: 8),
                 Text(
                   'Enter your email below to login to your account',
@@ -84,17 +133,22 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'm@example.com',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Email is required';
                     }
-                    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    final emailRegex = RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                    );
                     if (!emailRegex.hasMatch(value)) {
                       return 'Enter a valid email address';
                     }
@@ -105,13 +159,16 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                 PasswordField(
                   controller: _passwordController,
                   labelText: 'Password',
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required';
                     }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
                     }
                     return null;
                   },
@@ -124,10 +181,15 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordPage(),
+                          ),
                         );
                       },
-                      child: Text('Forgot your password?', style: AppTextStyles.link),
+                      child: Text(
+                        'Forgot your password?',
+                        style: AppTextStyles.link,
+                      ),
                     ),
                   ],
                 ),
@@ -151,7 +213,10 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                     const Expanded(child: Divider()),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('OR CONTINUE WITH', style: AppTextStyles.divider),
+                      child: Text(
+                        'OR CONTINUE WITH',
+                        style: AppTextStyles.divider,
+                      ),
                     ),
                     const Expanded(child: Divider()),
                   ],
@@ -160,26 +225,30 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                 SignInButton(
                   Buttons.Google,
                   onPressed: () {
-                    // TODO: Implement Google Sign-In
+                    if (!_isLoading) {
+                      _onGoogleLogin();
+                    }
                   },
-                  text: '     Sign in with Google',
+                  text: '    Sign in with Google',
                 ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account? ", style: AppTextStyles.subtitle),
+                    Text(
+                      "Don't have an account? ",
+                      style: AppTextStyles.subtitle,
+                    ),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SignupScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const SignupScreen(),
+                          ),
                         );
                       },
-                      child: Text(
-                        'Sign up',
-                        style: AppTextStyles.link,
-                      ),
+                      child: Text('Sign up', style: AppTextStyles.link),
                     ),
                   ],
                 ),

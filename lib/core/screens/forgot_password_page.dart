@@ -33,14 +33,27 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     setState(() => _isLoading = true);
     final res = await _authService.forgotPassword(_emailController.text.trim());
     setState(() => _isLoading = false);
-    if (res['success'] == true || (res['message'] ?? '').toString().toLowerCase().contains('sent')) {
+    if (res['success'] == true ||
+        (res['message'] ?? '').toString().toLowerCase().contains('sent')) {
       setState(() {
         _userEmail = _emailController.text.trim();
       });
-      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
-      showResponseDialog(context: context, isSuccess: true, title: 'Email Sent', message: res['message'] ?? 'OTP sent to your email');
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+      showResponseDialog(
+        context: context,
+        isSuccess: true,
+        title: 'Email Sent',
+        message: res['message'] ?? 'OTP sent to your email',
+      );
     } else {
-      showResponseDialog(context: context, title: 'Error', message: res['message'] ?? 'Failed to send email');
+      showResponseDialog(
+        context: context,
+        title: 'Error',
+        message: res['message'] ?? 'Failed to send email',
+      );
     }
   }
 
@@ -50,9 +63,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       final res = await _authService.verifyOtp(_otp);
       setState(() => _isLoading = false);
       if (res['success'] == true) {
-        _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
       } else {
-        showResponseDialog(context: context, title: 'Error', message: res['message'] ?? 'Invalid OTP');
+        showResponseDialog(
+          context: context,
+          title: 'Error',
+          message: res['message'] ?? 'Invalid OTP',
+        );
       }
     }
   }
@@ -64,9 +84,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       setState(() => _isLoading = false);
       if (res['success'] == true) {
         Navigator.of(context).pop();
-        showResponseDialog(context: context, isSuccess: true, title: 'Success', message: res['message'] ?? 'Password reset successfully');
+        showResponseDialog(
+          context: context,
+          isSuccess: true,
+          title: 'Success',
+          message: res['message'] ?? 'Password reset successfully',
+        );
       } else {
-        showResponseDialog(context: context, title: 'Error', message: res['message'] ?? 'Failed to reset password');
+        showResponseDialog(
+          context: context,
+          title: 'Error',
+          message: res['message'] ?? 'Failed to reset password',
+        );
       }
     }
   }
@@ -103,13 +132,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Reset Password', style: AppTextStyles.heading),
+            Image.asset('assets/images/Cutis.png', height: 100),
             const SizedBox(height: 8),
-            const Text('Enter the email associated with your account and we\'ll send an email with instructions to reset your password.', style: AppTextStyles.subtitle, textAlign: TextAlign.center),
+            Text('Reset Password', style: AppTextStyles.heading),
+            const SizedBox(height: 8),
+            Text(
+              'Enter the email associated with your account and we\'ll send an email with instructions to reset your password.',
+              style: AppTextStyles.subtitle,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 24),
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+              ),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.isEmpty) return 'Email is required';
@@ -121,8 +162,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _submitEmail,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: _isLoading ? const SizedBox(height:20,width:20,child:CircularProgressIndicator(color: Colors.white, strokeWidth:2)) : const Text('Send Instructions', style: AppTextStyles.button),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text('Send Instructions', style: AppTextStyles.button),
               ),
             ),
           ],
@@ -139,9 +192,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Enter OTP', style: AppTextStyles.heading),
+            Image.asset('assets/images/Cutis.png', height: 100),
             const SizedBox(height: 8),
-            Text('An OTP has been sent to $_userEmail', style: AppTextStyles.subtitle, textAlign: TextAlign.center),
+            Text('Enter OTP', style: AppTextStyles.heading),
+            const SizedBox(height: 8),
+            Text(
+              'An OTP has been sent to $_userEmail',
+              style: AppTextStyles.subtitle,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,8 +211,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _submitOtp,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: _isLoading ? const SizedBox(height:20,width:20,child:CircularProgressIndicator(color: Colors.white, strokeWidth:2)) : const Text('Verify', style: AppTextStyles.button),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text('Verify', style: AppTextStyles.button),
               ),
             ),
           ],
@@ -170,9 +241,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           counterText: '',
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
         ),
         onChanged: (value) {
           if (value.isNotEmpty) {
@@ -204,17 +278,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Create New Password', style: AppTextStyles.heading),
+            Image.asset('assets/images/Cutis.png', height: 100),
             const SizedBox(height: 8),
-            const Text('Your new password must be different from previously used passwords.', style: AppTextStyles.subtitle, textAlign: TextAlign.center),
+            Text('Create New Password', style: AppTextStyles.heading),
+            const SizedBox(height: 8),
+            Text(
+              'Your new password must be different from previously used passwords.',
+              style: AppTextStyles.subtitle,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 24),
             PasswordField(
               controller: _passwordController,
               labelText: 'New Password',
               border: const OutlineInputBorder(),
               validator: (value) {
-                if (value == null || value.isEmpty) return 'Password is required';
-                if (value.length < 6) return 'Password must be at least 6 characters';
+                if (value == null || value.isEmpty)
+                  return 'Password is required';
+                if (value.length < 8)
+                  return 'Password must be at least 8 characters';
                 return null;
               },
             ),
@@ -223,7 +305,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               labelText: 'Confirm New Password',
               border: const OutlineInputBorder(),
               validator: (value) {
-                if (value != _passwordController.text) return 'Passwords do not match';
+                if (value != _passwordController.text)
+                  return 'Passwords do not match';
                 return null;
               },
             ),
@@ -232,8 +315,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _submitNewPassword,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: _isLoading ? const SizedBox(height:20,width:20,child:CircularProgressIndicator(color: Colors.white, strokeWidth:2)) : const Text('Reset Password', style: AppTextStyles.button),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text('Reset Password', style: AppTextStyles.button),
               ),
             ),
           ],

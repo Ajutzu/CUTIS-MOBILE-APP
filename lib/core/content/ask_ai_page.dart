@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../routes/chat_service.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../theme/app_styles.dart';
 
 // A simple message model
@@ -27,10 +29,43 @@ class _AskAIPageState extends State<AskAIPage> {
   final TextEditingController _controller = TextEditingController();
   final List<_ChatMessage> _messages = [];
   final ScrollController _scrollController = ScrollController();
+  final ChatService _chatService = ChatService();
+
+  String? _conversationId;
+  bool _loading = false;
 
   @override
   void initState() {
     super.initState();
+    _initConversation();
+  }
+
+  String? get _historyId {
+    final rec = widget.historyRecord;
+    if (rec == null) return null;
+    return rec['recordId'] ?? rec['_id'];
+  }
+
+  Future<void> _initConversation() async {
+    if (_historyId != null) {
+      try {
+        final latest = await _chatService.getLatestConversation(historyId: _historyId);
+        if (latest.messages.isNotEmpty) {
+          setState(() {
+            _conversationId = latest.id;
+            _messages.clear();
+            _messages.addAll(latest.messages.map((m) => _ChatMessage(
+                  text: m.content,
+                  isUser: m.role == 'user',
+                )));
+          });
+          _scrollToBottom();
+          return;
+        }
+      } catch (e) {
+        debugPrint('Error fetching latest conversation: $e');
+      }
+    }
     _addInitialMessage();
   }
 
@@ -40,10 +75,10 @@ class _AskAIPageState extends State<AskAIPage> {
 
     if (widget.historyRecord != null) {
       welcomeText =
-          "Hello! I see you have a question about your record for '${widget.historyRecord!['diagnosis']}'. How can I help you today?";
+          "Hello! I see you have a question about your medical record. How can I help you today?";
       suggestions = [
-        "What are the common treatments for ${widget.historyRecord!['diagnosis']}?",
-        "Is ${widget.historyRecord!['diagnosis']} contagious?",
+        "What are the common treatments for my condition?",
+        "Is my condition contagious?",
         "What lifestyle changes can help?",
       ];
     } else {
@@ -64,31 +99,44 @@ class _AskAIPageState extends State<AskAIPage> {
     });
   }
 
-  void _sendMessage({String? text}) {
+  Future<void> _sendMessage({String? text}) async {
     final messageText = text ?? _controller.text;
-    if (messageText.isNotEmpty) {
-      setState(() {
-        // Remove suggestions from previous messages
-        for (var i = 0; i < _messages.length; i++) {
-          if (_messages[i].suggestions != null) {
-            _messages[i] = _ChatMessage(text: _messages[i].text, isUser: _messages[i].isUser);
-          }
-        }
-        _messages.add(_ChatMessage(text: messageText, isUser: true));
-        _controller.clear();
+    if (messageText.trim().isEmpty) return;
 
-        // Simulate AI response
-        Future.delayed(const Duration(milliseconds: 500), () {
-          setState(() {
-            _messages.add(_ChatMessage(
-                text: "Thank you for your question. I am analyzing it and will provide a response shortly.",
-                isUser: false));
-            _scrollToBottom();
-          });
-        });
+    setState(() {
+      // clear previous suggestions
+      for (var i = 0; i < _messages.length; i++) {
+        if (_messages[i].suggestions != null) {
+          _messages[i] = _ChatMessage(text: _messages[i].text, isUser: _messages[i].isUser);
+        }
+      }
+      _messages.add(_ChatMessage(text: messageText, isUser: true));
+      _controller.clear();
+      _loading = true;
+    });
+    _scrollToBottom();
+
+    try {
+      String aiReply;
+      if (_conversationId == null) {
+        final start = await _chatService.startConversation(message: messageText, historyId: _historyId);
+        _conversationId = start.conversationId;
+        aiReply = start.reply;
+      } else {
+        final rep = await _chatService.sendReply(conversationId: _conversationId!, message: messageText, historyId: _historyId);
+        aiReply = rep.reply;
+      }
+      setState(() {
+        _messages.add(_ChatMessage(text: aiReply, isUser: false));
+        _loading = false;
       });
-      _scrollToBottom();
+    } catch (e) {
+      setState(() {
+        _messages.add(_ChatMessage(text: 'Error: $e', isUser: false));
+        _loading = false;
+      });
     }
+    _scrollToBottom();
   }
   
   void _scrollToBottom() {
@@ -114,6 +162,7 @@ class _AskAIPageState extends State<AskAIPage> {
         children: [
           Expanded(
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
               controller: _scrollController,
               padding: const EdgeInsets.all(16.0),
               itemCount: _messages.length,
@@ -153,9 +202,16 @@ class _AskAIPageState extends State<AskAIPage> {
                     color: isAi ? AppColors.secondary : AppColors.primary,
                     borderRadius: BorderRadius.circular(16.0),
                   ),
-                  child: Text(
-                    message.text,
-                    style: TextStyle(color: isAi ? Colors.black87 : Colors.white),
+                  child: MarkdownBody(
+                    data: message.text,
+                    selectable: false,
+                    styleSheet: MarkdownStyleSheet(
+                      p: TextStyle(color: isAi ? Colors.black87 : Colors.white),
+                      strong: TextStyle(
+                        color: isAi ? Colors.black87 : Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -216,10 +272,15 @@ class _AskAIPageState extends State<AskAIPage> {
               ),
             ),
             const SizedBox(width: 8.0),
-            IconButton(
-              icon: const Icon(Icons.send, color: AppColors.primary),
-              onPressed: () => _sendMessage(),
-            ),
+            _loading
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.send, color: AppColors.primary),
+                    onPressed: () => _sendMessage(),
+                  ),
           ],
         ),
       ),

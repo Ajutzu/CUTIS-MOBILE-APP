@@ -1,0 +1,171 @@
+lib/core/content/skin_detection_page.dart:557:5: Error: Expected a class member, but got 'return'.
+    return Row(
+    ^^^^^^
+lib/core/content/skin_detection_page.dart:558:25: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      crossAxisAlignment: CrossAxisAlignment.start,
+                        ^
+lib/core/content/skin_detection_page.dart:559:15: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      children: [
+              ^
+lib/core/content/skin_detection_page.dart:620:1: Error: Expected a declaration, but got '}'.
+}
+^
+lib/core/content/skin_detection_page.dart:8:8: Error: Error when reading 'lib/core/content/skin_analysis_result_sheet.dart': The system cannot find the file specified.
+
+import 'skin_analysis_result_sheet.dart';
+       ^
+lib/core/content/skin_detection_page.dart:17:7: Error: The non-abstract class '_SkinDetectionPageState' is missing implementations for these members:
+ - State.build
+ - _SkinDetectionPageState.Row
+Try to either
+ - provide an implementation,
+ - inherit an implementation from a superclass or mixin,
+ - mark the class as abstract, or
+ - provide a 'noSuchMethod' implementation.
+
+class _SkinDetectionPageState extends State<SkinDetectionPage>
+      ^^^^^^^^^^^^^^^^^^^^^^^
+../../../flutter/packages/flutter/lib/src/widgets/framework.dart:1461:10: Context: 'State.build' is defined here.
+  Widget build(BuildContext context);
+         ^^^^^
+lib/core/content/skin_detection_page.dart:557:12: Context: '_SkinDetectionPageState.Row' is defined here.
+    return Row(
+           ^^^
+lib/core/content/skin_detection_page.dart:565:40: Error: Constant expression expected.
+Try inserting 'const'.
+            borderRadius: BorderRadius.circular(12),
+                                       ^^^^^^^^
+lib/core/content/skin_detection_page.dart:565:40: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+Try using a constructor or factory that is 'const'.
+            borderRadius: BorderRadius.circular(12),
+                                       ^^^^^^^^
+lib/core/content/skin_detection_page.dart:563:23: Error: Constant expression expected.
+Try inserting 'const'.
+          decoration: BoxDecoration(
+                      ^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:569:15: Error: Undefined name 'number'.
+              number,
+              ^^^^^^
+lib/core/content/skin_detection_page.dart:568:20: Error: Constant expression expected.
+Try inserting 'const'.
+            child: Text(
+                   ^^^^
+lib/core/content/skin_detection_page.dart:567:18: Error: Constant expression expected.
+Try inserting 'const'.
+          child: Center(
+                 ^^^^^^
+lib/core/content/skin_detection_page.dart:560:9: Error: Constant expression expected.
+Try inserting 'const'.
+        Container(
+        ^^^^^^^^^
+lib/core/content/skin_detection_page.dart:560:9: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+Try using a constructor or factory that is 'const'.
+        Container(
+        ^^^^^^^^^
+lib/core/content/skin_detection_page.dart:582:62: Error: Not a constant expression.
+            style: AppTextStyles.body.copyWith(color: Colors.grey.shade700),
+                                                             ^^^^
+lib/core/content/skin_detection_page.dart:582:39: Error: Method invocation is not a constant expression.
+            style: AppTextStyles.body.copyWith(color: Colors.grey.shade700),
+                                      ^^^^^^^^
+lib/core/content/skin_detection_page.dart:581:13: Error: Undefined name 'text'.
+            text,
+            ^^^^
+lib/core/content/skin_detection_page.dart:580:18: Error: Constant expression expected.
+Try inserting 'const'.
+          child: Text(
+                 ^^^^
+lib/core/content/skin_detection_page.dart:579:9: Error: Constant expression expected.
+Try inserting 'const'.
+        Expanded(
+        ^^^^^^^^
+lib/core/content/skin_detection_page.dart:559:17: Error: Constant expression expected.
+Try inserting 'const'.
+      children: [
+                ^
+lib/core/content/skin_detection_page.dart:114:5: Error: The getter 'Timer' isn't defined for the class '_SkinDetectionPageState'.
+ - '_SkinDetectionPageState' is from 'package:app/core/content/skin_detection_page.dart' ('lib/core/content/skin_detection_page.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'Timer'.
+    Timer.periodic(const Duration(seconds: 2), (timer) {
+    ^^^^^
+lib/core/content/skin_detection_page.dart:144:23: Error: The method 'SkinAnalysisResultSheet' isn't defined for the class '_SkinDetectionPageState'.
+ - '_SkinDetectionPageState' is from 'package:app/core/content/skin_detection_page.dart' ('lib/core/content/skin_detection_page.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'SkinAnalysisResultSheet'.
+      builder: (_) => SkinAnalysisResultSheet(result: _result!),
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:214:21: Error: The method '_buildInstructionStep' isn't defined for the class '_SkinDetectionPageState'.
+ - '_SkinDetectionPageState' is from 'package:app/core/content/skin_detection_page.dart' ('lib/core/content/skin_detection_page.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_buildInstructionStep'.
+                    _buildInstructionStep(
+                    ^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:219:21: Error: The method '_buildInstructionStep' isn't defined for the class '_SkinDetectionPageState'.
+ - '_SkinDetectionPageState' is from 'package:app/core/content/skin_detection_page.dart' ('lib/core/content/skin_detection_page.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_buildInstructionStep'.
+                    _buildInstructionStep(
+                    ^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:224:21: Error: The method '_buildInstructionStep' isn't defined for the class '_SkinDetectionPageState'.
+ - '_SkinDetectionPageState' is from 'package:app/core/content/skin_detection_page.dart' ('lib/core/content/skin_detection_page.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_buildInstructionStep'.
+                    _buildInstructionStep(
+                    ^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:229:21: Error: The method '_buildInstructionStep' isn't defined for the class '_SkinDetectionPageState'.
+ - '_SkinDetectionPageState' is from 'package:app/core/content/skin_detection_page.dart' ('lib/core/content/skin_detection_page.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_buildInstructionStep'.
+                    _buildInstructionStep(
+                    ^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:287:16: Error: Too few positional arguments: 2 required, 0 given.
+            Row(
+               ^
+lib/core/content/skin_detection_page.dart:333:22: Error: Too few positional arguments: 2 required, 0 given.
+                  Row(
+                     ^
+lib/core/content/skin_detection_page.dart:369:31: Error: Too few positional arguments: 2 required, 0 given.
+                    child: Row(
+                              ^
+lib/core/content/skin_detection_page.dart:424:22: Error: Too few positional arguments: 2 required, 0 given.
+                  Row(
+                     ^
+lib/core/content/skin_detection_page.dart:464:17: Error: Too few positional arguments: 2 required, 0 given.
+      child: Row(
+                ^
+lib/core/content/skin_detection_page.dart:533:27: Error: Too few positional arguments: 2 required, 0 given.
+                child: Row(
+                          ^
+lib/core/content/skin_detection_page.dart:593:13: Error: Undefined name '_capturedImage'.
+      body: _capturedImage == null
+            ^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:594:13: Error: Method not found: '_buildInstructionScreen'.
+          ? _buildInstructionScreen()
+            ^^^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:595:13: Error: Undefined name '_loading'.
+          : _loading
+            ^^^^^^^^
+lib/core/content/skin_detection_page.dart:596:17: Error: Method not found: '_buildAnalysisProgressScreen'.
+              ? _buildAnalysisProgressScreen()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:597:17: Error: Method not found: '_buildImagePreviewScreen'.
+              : _buildImagePreviewScreen(),
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:598:29: Error: Undefined name '_capturedImage'.
+      floatingActionButton: _capturedImage != null && !_loading
+                            ^^^^^^^^^^^^^^
+lib/core/content/skin_detection_page.dart:598:56: Error: Undefined name '_loading'.
+      floatingActionButton: _capturedImage != null && !_loading
+                                                       ^^^^^^^^
+lib/core/content/skin_detection_page.dart:600:26: Error: Undefined name '_loading'.
+              onPressed: _loading ? null : _capture,
+                         ^^^^^^^^
+lib/core/content/skin_detection_page.dart:600:44: Error: Undefined name '_capture'.
+              onPressed: _loading ? null : _capture,
+                                           ^^^^^^^^
+lib/core/content/skin_detection_page.dart:604:21: Error: Undefined name '_loading'.
+              icon: _loading
+                    ^^^^^^^^
+lib/core/content/skin_detection_page.dart:614:27: Error: Undefined name '_loading'.
+              label: Text(_loading ? 'Analyzing...' : 'Retake'),
+                          ^^^^^^^^
+lib/core/content/skin_detection_page.dart:559:17: Error: Non-constant list literal is not a constant expression.
+      children: [
+                ^

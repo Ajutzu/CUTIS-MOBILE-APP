@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'core/widgets/loading_animation.dart';
+import 'core/screens/login.dart';
+import 'core/screens/home_screen.dart';
 import 'core/screens/onboarding_flow.dart';
-
+import 'routes/session_service.dart';
+import 'core/theme/app_styles.dart';
 import 'routes/api.dart';
 
 Future<void> main() async {
@@ -19,7 +22,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        scaffoldBackgroundColor: AppColors.background,
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: AppColors.primary,
+        ),
       ),
       home: const SplashToLogin(),
     );
@@ -37,13 +44,37 @@ class _SplashToLoginState extends State<SplashToLogin> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
+    _handleNavigation();
+  }
+
+  Future<void> _handleNavigation() async {
+    // Ensure splash is visible for at least 1.5 seconds
+    await Future.wait([
+      Future.delayed(const Duration(milliseconds: 1500)),
+      _checkSessionAndNavigate(),
+    ]);
+  }
+
+  Future<void> _checkSessionAndNavigate() async {
+    try {
+      final session = await SessionService().getSession();
+      if (!mounted) return;
+      if (session.isAuthenticated) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => HomeScreen(userName: session.user?['name'] ?? '')),
+        );
+      } else {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const OnboardingFlowScreen()),
         );
       }
-    });
+    } catch (e) {
+      // On any error, fallback to login
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const AuthLoginScreen()),
+      );
+    }
   }
 
   @override

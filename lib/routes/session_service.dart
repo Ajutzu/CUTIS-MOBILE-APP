@@ -20,7 +20,9 @@ class SessionService {
   Future<SessionResponse> getSession() async {
     try {
       final res = await _dio.get('/api/token/session-management');
-      return SessionResponse(isAuthenticated: true, user: res.data['user']);
+      final user = res.data['user'];
+      final isAuth = user != null;
+      return SessionResponse(isAuthenticated: isAuth, user: user, error: isAuth ? null : (res.data['message']?.toString() ?? 'Unauthenticated'));
     } catch (e) {
       return SessionResponse(isAuthenticated: false, error: 'Failed to validate session');
     }
@@ -35,7 +37,9 @@ class SessionService {
         'Pragma': 'no-cache',
         'Expires': '0',
       }));
-      return SessionResponse(isAuthenticated: true, user: res.data['user']);
+      final user = res.data['user'];
+      final isAuth = user != null;
+      return SessionResponse(isAuthenticated: isAuth, user: user, error: isAuth ? null : (res.data['message']?.toString() ?? 'Unauthenticated'));
     } catch (e) {
       return SessionResponse(isAuthenticated: false, error: 'Failed to refresh session');
     }

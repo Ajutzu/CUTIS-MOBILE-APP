@@ -1,7 +1,10 @@
 import 'api.dart';
 
 class TokenService {
-  TokenService._();
+  TokenService._internal();
+  static final TokenService _instance = TokenService._internal();
+  factory TokenService() => _instance;
+
   static final _dio = Api().dio;
 
   /// GET /api/token/check-reset-token

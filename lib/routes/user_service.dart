@@ -34,4 +34,36 @@ class UserService {
       return {'success': false, 'message': 'An error occurred: $e'};
     }
   }
+
+  /// Get user's medical history records
+  Future<List<Map<String, dynamic>>> getMedicalHistory() async {
+    try {
+      await Api.init();
+      final res = await _dio.get('/api/user/medical-history');
+      if (res.statusCode != null && res.statusCode! < 400) {
+        final data = res.data as Map<String, dynamic>;
+        return List<Map<String, dynamic>>.from(data['medical_history'] ?? []);
+      }
+      return [];
+    } catch (e) {
+      print('Error in getMedicalHistory: $e');
+      return [];
+    }
+  }
+
+  /// Get a single medical history record by ID
+  Future<Map<String, dynamic>?> getMedicalHistoryById(String id) async {
+    try {
+      await Api.init();
+      final res = await _dio.get('/api/user/medical-history/$id');
+      if (res.statusCode != null && res.statusCode! < 400) {
+        final data = res.data as Map<String, dynamic>;
+        return data['history'] as Map<String, dynamic>?;
+      }
+      return null;
+    } catch (e) {
+      print('Error in getMedicalHistoryById: $e');
+      return null;
+    }
+  }
 }

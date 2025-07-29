@@ -25,7 +25,7 @@ class Api {
     // variable `API_ORIGIN` is not provided. For Android emulators the host
     // machine is accessible via 10.0.2.2, whereas for Flutter Web we can usually
     // talk to the backend running on the same origin.
-    final String defaultOrigin = kIsWeb ? 'http://localhost:3002' : 'http://10.0.2.2:3002';
+    final String defaultOrigin = kIsWeb ? 'http://localhost:3002' : 'https://cutis-backend.onrender.com/';
 
     // Allow overriding the origin via `--dart-define=API_ORIGIN=<url>`.
     final String envOrigin = const String.fromEnvironment('API_ORIGIN');
@@ -35,7 +35,7 @@ class Api {
       BaseOptions(
         baseUrl: resolvedOrigin,
         connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(minutes: 5),
         extra: {
           // make Dio attach stored cookies automatically
           'withCredentials': true,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_styles.dart';
 
 class HistoryRecordCard extends StatelessWidget {
@@ -33,6 +34,7 @@ class HistoryRecordCard extends StatelessWidget {
               _buildHeader(),
               const SizedBox(height: 12),
               const Divider(),
+              _buildRecommendations(),
               const SizedBox(height: 8),
               _buildFooter(),
             ],
@@ -42,13 +44,18 @@ class HistoryRecordCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+Widget _buildHeader() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.asset(record['image'], width: 60, height: 60, fit: BoxFit.cover),
+          child: Image.network(
+            record['image'],
+            width: 80,
+            height: 80,
+            fit: BoxFit.cover,
+          ),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -56,13 +63,26 @@ class HistoryRecordCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                record['diagnosis'].split(': ').last,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                record['diagnosis'],
+                style: AppTextStyles.subtitle,
               ),
-              const SizedBox(height: 8),
-              _buildSeverityBadge(record['severity']),
+              const SizedBox(height: 4),
+              Text(
+                DateFormat('MMM d, y - h:mm a').format(record['date']),
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _getSeverityColor(record['severity']),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  record['severity'],
+                  style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
         ),
@@ -71,8 +91,7 @@ class HistoryRecordCard extends StatelessWidget {
   }
 
   Widget _buildFooter() {
-    final date = record['date'] as DateTime;
-    final formattedDate = DateFormat('MMMM d, y').format(date);
+    final formattedDate = DateFormat('MMM d, y').format(record['date']);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -89,30 +108,86 @@ class HistoryRecordCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSeverityBadge(String severity) {
-    Color badgeColor;
+  Widget _buildRecommendations() {
+    final specialist = record['specialist'] as Map<String, dynamic>?;
+    final clinics = record['clinics'] as List<dynamic>?; // This is currently empty
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (specialist != null && specialist['name'] != null)
+          _buildRecommendationLink(
+            icon: Icons.person_search,
+            title: 'Find a Specialist',
+            subtitle: 'Search for "${specialist['name']}"',
+            onTap: () {
+              final query = Uri.encodeComponent('${specialist['name']}, ${specialist['type']}');
+              _launchURL('https://www.google.com/search?q=$query');
+            },
+          ),
+        if (clinics != null && clinics.isNotEmpty)
+          _buildRecommendationLink(
+            icon: Icons.local_hospital,
+            title: 'Find a Clinic',
+            subtitle: 'Search for nearby clinics',
+            onTap: () {
+              _launchURL('https://www.google.com/maps/search/dermatology+clinic');
+            },
+          ),
+        if ((specialist != null && specialist['name'] != null) || (clinics != null && clinics.isNotEmpty))
+          const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildRecommendationLink({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.primary, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+                  Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                ],
+              ),
+            ),
+            const Icon(Icons.launch, color: AppColors.primary, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      // For now, we just print to console if it fails.
+      // In a real app, you might want to show a snackbar.
+      print('Could not launch $url');
+    }
+  }
+
+  Color _getSeverityColor(String severity) {
     switch (severity.toLowerCase()) {
       case 'severe':
       case 'high':
-        badgeColor = Colors.red.shade400;
-        break;
+        return Colors.red.shade400;
       case 'moderate':
-        badgeColor = Colors.orange.shade400;
-        break;
+        return Colors.orange.shade400;
       default:
-        badgeColor = Colors.green.shade400;
+        return Colors.green.shade400;
     }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: badgeColor.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        severity,
-        style: TextStyle(fontSize: 12, color: badgeColor, fontWeight: FontWeight.bold),
-      ),
-    );
   }
 }
